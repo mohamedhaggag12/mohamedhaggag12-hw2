@@ -32,12 +32,19 @@ class TestTextToNumber:
         assert text_to_number("Two") == 2
         assert text_to_number("ZERO") == 0
     
+    def test_complex_numbers(self):
+        """Test complex number words using text2digits"""
+        assert text_to_number("two hundred") == 200
+        assert text_to_number("forty two") == 42
+        assert text_to_number("one thousand") == 1000
+        assert text_to_number("three hundred fifty seven") == 357
+
     def test_invalid_text(self):
         """Test invalid text input"""
         with pytest.raises(ValueError):
             text_to_number("invalid")
         with pytest.raises(ValueError):
-            text_to_number("eleven")  # Not in the basic dictionary
+            text_to_number("not a number")
         with pytest.raises(ValueError):
             text_to_number("")
 

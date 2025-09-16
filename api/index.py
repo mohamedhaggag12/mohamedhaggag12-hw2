@@ -8,23 +8,31 @@ app = Flask(__name__)
 
 def text_to_number(text):
     """Convert English text number to integer"""
-    # Remove any non-alphanumeric characters and convert to lowercase
-    text = re.sub(r'[^a-zA-Z\s-]', '', text.lower())
-    
-    # Special case for zero
-    if text in ['zero', 'nil']:
-        return 0
-    
-    # Dictionary for special number words
-    number_words = {
-        'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
-        'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10
-    }
-    
-    if text in number_words:
-        return number_words[text]
-    
-    raise ValueError("Unable to convert text to number")
+    try:
+        # Clean the input text
+        text = text.strip().lower()
+
+        # Use text2digits library for comprehensive text to number conversion
+        t2d = text2digits.Text2Digits()
+        converted_text = t2d.convert(text)
+
+        # Extract the number from the converted text
+        # text2digits converts "two hundred" to "200" but might leave other text
+        numbers = re.findall(r'\d+', converted_text)
+        if numbers:
+            return int(numbers[0])
+
+        # Fallback: try direct conversion if it's already a number
+        if text.isdigit():
+            return int(text)
+
+        # Special cases for zero
+        if text in ['zero', 'nil']:
+            return 0
+
+        raise ValueError("Unable to convert text to number")
+    except:
+        raise ValueError("Unable to convert text to number")
 
 def number_to_text(number):
     """Convert integer to English text"""
